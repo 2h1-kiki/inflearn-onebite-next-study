@@ -177,3 +177,106 @@ export default function Page() {
 ### `Optional Catch All Segment : [[...id]].tsx`
 - `localhost:3000/book` 와 `localhost:3000/book/1/2/3/4/5/` 모두 대응이 가능한 페이지가 된다.
 - Catch All Segment로 된 파일을 대괄호로 한번 더 감싼 파일
+
+## 2.3) 네비게이팅
+
+`<Link href={}></Link>` 
+
+- Next 내장 컴폰넌트로 `<a>` 태그와 동일한 역할을 한다.
+- 내장 컴포넌트 사용을 하는게 더 좋다.
+
+### 프로그래매틱한 페이지 이동 (Programmatic Navigation)
+
+- 프로그래매틱하게 페이지 이동시킨다는 말은?
+→ 사용자가 링크를 직접 클릭했을 때 페이지를 이동시키는 방식이 아닌
+→ 특정 버튼이 클릭이 되었거나 아니면 특정 조건이 만족했을 경우에 어떠한 함수 내에서 페이지를 이동 시키는 방법
+
+### `router.push()`
+
+- 인수로 전달받은 경로로 페이지를 CSR 방식으로 페이지가 이동 된다.
+
+### `router.replace()`
+
+- 뒤로가기를 방지하며 페이지 이동
+
+### `router.back()`
+
+- 뒤로가기 시키는 메서드
+
+## 2.4) 프리페칭 Pre-Fetching
+
+- Pre-Fetching : 페이지를 사전에 불러올 때 사용
+- 개발환경에서는 동작하지 않고, build 한 후 build 된 것을 실행해야 Pre-Fetching이 잘 돌아가는 것을 확인할 수 있다.
+    - `npm run build` → `npm run start`
+    - 페이지 이동 시 프리패칭 처리 되다가 다시 불러오는 이유는 캐시가 만료되었기 때문이다.
+    - `Link` 컴포넌트로 명시된 경로가 아니라면 프리패칭이 이뤄지지 않는다.
+- 링크를 통해 이동해야하는 페이지를 미리 불러오도록 Next는 처리한다.
+    → 웹페이지 내부의 링크를 클릭하기 전에 현재 페이지에서 이동이 가능한 모든 페이지들에 필요한 데이터를 미리 다 불러와 놓음으로써 이동을 매우 빠른 속도로 지체 없이 처리하기 위한 것
+    
+- Next의 경우 초기 접속 요청이 완료가 되어서 페이지가 렌더링이 됐는데 추가적인 데이터를 왜 사전에 불러와야 하는가?
+    → Next는 자바스크립트 코드(리액트 컴포넌트)들을 자동으로 페이지별로 스플리팅 해서 페이별로 분리해서 저장을 미리 한다.
+    
+- 사전 렌더링 과정에서 JS번들 파일을 전달 할 때, 현재 페이지에 필요한 JS Bundle만 전달 된다.
+    → 모든 페이지에 필요한 자바스크립트 코드가 전달되는게 아닌!
+    
+- 특정 요청에 대한 파일들만 전달되는 이유?
+    → JS Bundle을 전달할 때 코드 양을 줄여, 초기 접속 요청이 있을 때 모든 페이지에 대한 파일을 번들링 할 때 브라우저가 느려지게 된다.
+    → Hydration 과정도 오래되므로, TTI를 줄이기 위한 방법이다.
+        
+- 따라서, 페이지 이동 시 자바스크립트를 불러오는 방식이므로, Pre-Fetching이 추가로 적용이 되는 것이다.
+    
+    - Pre Fetching이 없었다면
+        → 초기 접속 때 페이지에 필요한 JS를 번들링 해오므로 용량이 작아 초기 접속은 빠르더라도,
+        → 다른 페이지 이동 시 또 다시 번들링 처리가 필요하여 비효율적인 페이지 이동이 발생한다.
+        
+    - Pre Fetching이 있기에
+        → 페이지 이동 요청이 발생하기 전에 미리 불러와 놓으므로 페이지 이동을 훨씬 빠르게 동작할 수 있게 만들어졌다.
+        
+- 프로그래매틱한 코드도 프리패칭 하고 싶다면?
+    - 특정 함수에 페이지 처리가 되면 프리패칭 적용이 안된다.
+    - 라우터 객체 `useRouter()` 의 특정 메서드를 통해서 직접 프로그래메틱하게 페이지를 프리패칭하도록 코드 작성을 하면 된다.
+    → 마운트 되었을 때 실행하는 프리패치가 되어야하는 페이지를 넣어주면 된다.
+    
+    ```
+    import '@/styles/globals.css'
+    import type {AppProps} from 'next/app'
+    import Link from 'next/link'
+    import { useRouter } from 'next/router'
+    import { useEffect } from 'react'
+    
+    export default function App({Component, pageProps}: AppProps) {
+    
+      const router = useRouter()
+    
+      const onClickButton = () => {
+        router.push('/test')
+      }
+    
+      useEffect(() => {
+        router.prefetch('/test') //특정 요청을 명시적으로 처리 가능
+      }, [])
+    
+      return (
+        <>
+          <header>
+            <Link href={'/'}>index</Link>
+            &nbsp;
+            <Link href={'/search'}>search</Link>
+            &nbsp;
+            <Link href={'/book/1'}>book/1</Link>
+            <div>
+              <button onClick={onClickButton}>/test 페이지 이동</button>
+            </div>
+          </header>
+          <Component {...pageProps} />
+        </>
+      )
+    }
+    
+    ```
+    
+
+- `Link` 컴포넌트는 자동으로 프리패칭을 하는데, 프리패칭을 안하고 싶다면
+    
+    `<Link href={'/search'} prefetch={false}>search</Link>` 
+    → prefetch값을 Link에 넣어주면 된다.
