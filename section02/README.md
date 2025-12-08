@@ -27,9 +27,9 @@
 - 주도권 : Framework
   → 프레임워크가 제공하는 기능을 이용
   → 허용하는 범위 내에서만 추가 도구 사용 가능
-      ex) Next에서 라우팅 처리 할 때
-      → Next에서 제공하는 Page Router, App Router 두가지 라우터 중에서만 선택가능
-      → 방법은 이미 정해져 있다.
+  ex) Next에서 라우팅 처리 할 때
+  → Next에서 제공하는 Page Router, App Router 두가지 라우터 중에서만 선택가능
+  → 방법은 이미 정해져 있다.
 - 자유도가 낮다.
   → 장점 : 거의 모든 기능 제공 (페이지라우터, 최적화(Optimizations), SSR .. 등등)
 
@@ -77,7 +77,7 @@
   4.  화면 렌더링 (FCP)
       → 화면 렌더링 : HTM코드를 브라우저가 화면에 그려내는 작업
       → 브라우저는 렌더링이 완료된 HTMl파일을 그대로 화면에 렌더링하여 사용자는 완성된 화면을 볼 수 있다.
-          ⇒ **JS코드가 없는 상태이므로 상호작용은 아직 불가능하다.**
+      ⇒ **JS코드가 없는 상태이므로 상호작용은 아직 불가능하다.**
   5.  JS Bundle
       → 서버는 후속으로 리액트 앱(자바스크립트 코드)를 번들링해서 브라우저에 보내준다.
   6.  수화 Hydration
@@ -284,6 +284,7 @@ export default function Page() {
 - Next.js 앱에서 API를 구축할 수 있게 해주는 기능
   → 간단한 API 구축 가능
 - `src/pages/api` 폴더 안에 `test.ts` 처럼 넣어주면 된다.
+
   ```tsx
   // src/pages/api/time.ts
 
@@ -313,7 +314,9 @@ export default function Home() {
 - 인라인 스타일의 단점
   - 컴포넌트의 HTML요소가 많아질수록 가독성이 떨어진다.
 - CSS 파일 분리해서 관리
+
   - 단, \_app.tsx 외에 다른 파일에서 css파일을 import를 하면 error가 생긴다.
+
   ```tsx
   // index.css
   import './index.css'
@@ -331,15 +334,17 @@ export default function Home() {
   ./src/pages/index.css
   */
   ```
+
   - import를 제한하는 이유는?
     → 다른 페이지에 작성된 css 코드와 충돌을 일으킬 수 있기 때문이다.
     → 페이지별로 사용되는 css에 정의된 스타일의 클래스명이 겹치게 되면 css파일이 브라우저에 같이 로딩이되어 충돌을 일으킨다.
     따라서, 클래스명이 겹치지 않게 하면되는데 불가능 하다.
-        ```tsx
-        // index.css
-        .h1 {
-        	color: red
-        }
+
+    ````tsx
+    // index.css
+    .h1 {
+    color: red
+    }
 
         // test.css
         .h1 {
@@ -351,6 +356,7 @@ export default function Home() {
 
         → 따라서, Next.js는 별도의 페이지 파일이나 또는 어떠한 컴포넌트 파일에서 별도의 CSS파일을 import 하는 것을 제한한다/
         → 단, __app.tsx의 경우 예외적으로 global.css만 import할 수 있다. 다른 컴포넌트들의 부모 컴포넌트이기 때문이다.
+    ````
 
 ### CSS Module
 
@@ -358,8 +364,10 @@ export default function Home() {
 - CSS 모듈 사용하는 이유
   → Next의 경우 별도의 파일이나 페이지에서 CSS import하는 것을 원천 차단하므로 `_app.tsx`를 제외하고 css를 import 하지 못하기 때문이다.
 - 파일명 변경
+
   - 기존 : `index.css` → 에러 발생
   - 모듈 변경 : `index.module.css`
+
   ```tsx
   // src/pages/index.module.css
   .h1 {
@@ -378,6 +386,7 @@ export default function Home() {
   }
 
   ```
+
   → `style.h1` 이 유니크한 클래스명으로 변경된다.
   → 개발자 도구로 확인 된 class명 : `<h1 style="" class="index_h1__JHo3j">index</h1>`
 
@@ -571,11 +580,12 @@ Home.getLayout = (page: ReactNode) => {
 
 - getLayout이 없는 컴포넌트는 예외처리를 해줘야한다.
   → page를 매개변수로 받아서 리턴해주는 함수를 넣어주면 된다.
-      ```tsx
-      import GlobalLayout from '@/components/global-layout'
-      import '@/styles/globals.css'
-      import type {AppProps} from 'next/app'
-      import {ReactNode} from 'react'
+
+  ````tsx
+  import GlobalLayout from '@/components/global-layout'
+  import '@/styles/globals.css'
+  import type {AppProps} from 'next/app'
+  import {ReactNode} from 'react'
 
       export default function App({Component, pageProps}: AppProps) {
         const getLayout = Component.getLayout ?? ((page: ReactNode) => page)
@@ -588,11 +598,13 @@ Home.getLayout = (page: ReactNode) => {
       - `((page: ReactNode) => page)` 페이지를 그대로 넘기는 함수를 적용하더라도
       `getLayout(<Component {...pageProps} />)` 이렇게 렌더링을 하도록 설정해주어도,
       페이지 컴포넌트가 그대로 화면에 렌더링이 되기에 문제가 없다.
+  ````
 
 ### getLayout은 기존의 Next에서 제공되는 함수가 아니므로 type설정을 해줘야한다.
 
 - 즉, getLayout은 App컴포넌트가 받는 컴포넌트 props인 component의 원래 정의된 함수가 아니라는 것이다.
 - 따라서, 기존 Next에서 제공하는 함수를 통해 확장해서 타입정의를 다시 해줘야한다.
+
   ```tsx
   // src/pages/_app.tsx
 
@@ -626,3 +638,582 @@ Home.getLayout = (page: ReactNode) => {
 - 타입의 의미
   - 리텍트에서 발생한 체인지 이벤트 객체 타입
   - 어떤 태그에서 발생했나면? HTMLInputElement에서 발생한 이번트 타입이다.
+
+## 2.9) 한입북스 UI 구현하기
+
+`.cover_img_container**::before**`
+
+- before 요소는 css상에서 특별한 스타일링이나 어떠한 요소에 데코레이션을 넣어주기 위한 가상으로 존재하는 요소를 하나 만드는 방식
+- 스타일링만을 위해 사용되는 기능
+
+## 2.10) 사전 렌더링과 데이터 페칭
+
+### 기존 리액트앱에서 데이터 패칭하는 방식
+
+![image.png](attachment:3e00e3d8-07c7-4ccb-8d9e-3844fa47984b:e4b29bc2-1c79-4401-b04a-2e9ad1a66e99.png)
+
+![image.png](attachment:cf2230ab-1f3b-4508-a589-81ff74636e51:a1303543-4686-44c0-aa36-311a98f5cb4e.png)
+
+- 딘점 : 초기 접속 요청부터 데이터 로딩까지 오랜시간이 걸림
+  → 데이터 요청이 3. 컴포넌트 마운트 시점에 fetchData호출을 하므로 요청 자체가 늦게 시작한다.
+
+![image.png](attachment:09c82703-ef2a-4d10-baba-1087a2d5243f:image.png)
+
+- 브라우저가 html렌더링과 후속으로 받는 JS도 실행해야하므로 FCP가 늦어진다.
+  → 따라서 초기 접속이 느린 리액트에서 컴포넌트가 `useEffect` 가 마운트 된 이후가 되서야 백엔드 서버에 데이터 요청하도록 코드를 작성하면
+  → FCP이후에 API 요청을 하게된다.
+- 따라서, 사용자는 초기 렌더링이 느린데 로딩바도 기다려야하는 상황이 발생할 수도 있다.
+
+## 사전 렌더링
+
+![image.png](attachment:452af2b6-4945-4b1a-a375-f714c57fcd9e:image.png)
+
+- 사전 렌더링 : 사용자 접속 후 서버에서 JS를 실행하고 렌더링된 완선된 HTML을 브라우저에 응답하는 방식
+  → React의 FCP가 느린 단점을 보완한 렌더링 방식
+- 이때 JS 실행(렌더링)하면서 데이터를 미리 불러올 수 있도록 설정이 가능하다.
+  ![image.png](attachment:9b7b1952-ae00-4e5e-a7bd-6b6ffad62a69:206ea8ee-db3d-4889-b611-ee3ae623ae5a.png)
+  → 따라서 Next는 훨씬 빠른 시간에 데이터를 불러올 수 있어, 데이터패칭이 완료된 페이지를 사용자에 노출 할 수 있게 되었다.
+  - 단, 서버에서 사전렌더링(JS 실행)에서 데이터를 갖고 올 때 오래걸리게 되면 Build TIme에 미리 맞출수도 있다.
+
+### 따라서 사전렌더링 방식은
+
+### 1. 서버사이드 렌더링(SSR)
+
+- 가장 기본적인 사전 렌더링 방식
+- 요청이 들어올 때 마다 사전 렌더링을 진행 함
+
+### 2. 정적 사이트 생성(SSG)
+
+- 빌드 타임에 미리 페이지를 사전 렌더링 해줌
+  → 오래 걸릴 것으로 예상되는 페이지를 빌드 타임에 렌더링 하는 방식
+
+### 3. 증분 정적 재생성(ISR)
+
+- 향후에 다룰 사전 렌더링 방식
+
+## 2.11) SSR 소개 및 실습
+
+- Server Side Rendering
+- 브라우저에 접속 요청이 들어올 때마다 매번 계속해서 새롭게 페이지를 사전렌더링 하는 방식
+
+### `getServerSideProps`
+
+```tsx
+// 함수를 적어주는 것만으로도 사전에 렌더링을 하는 SSR 페이지가 된다.
+export const getServerSideProps = () => {
+	// 페이지 역할을 하는 컴포넌트보다 먼저 실행 되어 해당 컴포넌트에 필요한 데이터를 미리 불러오는 함수
+}
+
+export default function Home() {
+...
+}
+```
+
+→ 페이지 파일에 getServerSideProps 함수로 만들어서 export 하면 SSR로 동작 하도록 Next에 설정 되어있다.
+
+- 순서
+  1. 사용자가 `localhost:3000` 으로 Home을 요청
+  2. 해당 페이지 안에 `getServerSideProps` 로 된 함수가 있으면 먼저 실행
+  3. `export default function Home()` 실행
+- 사용 방법 (framework 문법)
+
+  - `getServerSideProps` 함수의 리턴값은 `props` 라는 객체 프로퍼티를 포함하는 **단 하나의 객체**여야만 한다.
+    → 이렇게 해야만 Next에서 읽어서 return이 되고, 페이지 컴포넌트에 값을 전달할 수 있다.
+
+  ```tsx
+  export const getServerSideProps = () => {
+  	const data = 'hello' // 이런 값을 넣었다 가정하면
+
+  	// 아래의 형태로 return 될 수 있도록 설정 가능
+  	return {
+  		props: {
+  			data,
+  		}
+  	}
+  }
+
+  export default funciton Home({data}: any) {
+
+  	console.log('data : ', data) // data: hello
+  }
+  ```
+
+  → `getServerSideProps`는 페이지 컴포넌트보다 먼저 실행되어서 페이지 컴포넌트에 필요한 데이터를 서버나 다른 곳에서 갖고와 페이지 컴포넌트에 props로 전달할 수 있다.
+
+### `getServerSideProps` 주의할 점
+
+- `getServerSideProps` 함수는 사전 렌더링을 하는 과정에서 한번만 실행되므로 오직 서버측에서만 실행되는 함수이다.
+- 따라서, 추가로 코드를 넣더라도 브라우저에서는 출력되지 않는다.
+
+  ```tsx
+  export const getServerSideProps = () => {
+    console.log('서버사이드프롭스에요' // 브라우저에 출력❌
+
+  	const data = 'hello' // 이런 값을 넣었다 가정하면
+
+  	// 아래의 형태로 return 될 수 있도록 설정 가능
+  	return {
+  		props: {
+  			data,
+  		}
+  	}
+  }
+  ```
+
+  → 대신에 Next서버에 실행시 나오는 로그에는 요청이 들어올 때마다 출력이 된다.
+
+- 따라서 window 객체의 경우 브라우저에서 실행되는 객체는 읽을 수 없으므로 해당 함수에서 실행 시 오류가 발생한다.
+
+  ```tsx
+  export const getServerSideProps = () => {
+  	window.location; // 에러 발생 > ReferenceError: window is not defined
+    console.log('서버사이드프롭스에요' // 브라우저에 출력❌
+
+  	const data = 'hello' // 이런 값을 넣었다 가정하면
+
+  	// 아래의 형태로 return 될 수 있도록 설정 가능
+  	return {
+  		props: {
+  			data,
+  		}
+  	}
+  }
+  ```
+
+  → window객체가 undefined로 window객체를 찾으면 없으므로 에러가 발생한다.
+
+- `Home` 페이지 컴포넌트도 서버에서 한번 먼저 실행 된 다음 브라우저에서 실행이 되어 총 2번 실행된다.
+
+  1.  브라우저로부터 접속 요청을 받았을 때 사전 렌더링을 위해서 먼저 서버 측에서 한번 `Home` 페이지 컴포넌트가 실행된다. → 서버에서 1번
+
+  2.  브라우저에서 자바스크립트 번들 형태로 전달이 되어서 브라우저 측에서 실행 될 때,
+      즉 하이드레이션 과정이 진행 될 때 한번 더 실행됨 → 브라우저에서 1번
+
+          따라서 `Home` 컴포넌트에 `window` 함수를 사용하면 같은 에러가 발생한다.
+
+          ```tsx
+          export default function Home({data}: any) {
+            console.log('data : ', data)
+            window.location // 에러 발생 > ReferenceError: window is not defined
+            return (
+              <div className={style.container}>
+                <section>
+                  <h3>지금 추천하는 도서</h3>
+                  {books.map((book) => (
+                    <BookItem key={book.id} {...book} />
+                  ))}
+                </section>
+                <section>
+                  <h3>등록된 모든 도서</h3>
+                  {books.map((book) => (
+                    <BookItem key={book.id} {...book} />
+                  ))}
+                </section>
+              </div>
+            )
+          }
+
+          ```
+          - Home 내부에 있는 window도 undefined로 undefined.location이므로 에러가 발생한다.
+
+### window 객체를 브라우저에서만 실행되도록 하려면?
+
+→ `useEffect` 를 이용한다.
+
+→ useEffect 훅 자체가 컴포넌트가 마운트 된 이후이므로 브라우저에서만 실행이 되므로 브라우저에서만 실행된다.
+
+```tsx
+import SearchableLayout from '@/components/searchable-layout'
+import style from './index.module.css'
+import {ReactNode, useEffect} from 'react'
+import books from '@/mock/books.json'
+import BookItem from '@/components/book-item'
+
+export const getServerSideProps = () => {
+  const data = 'hello'
+
+  return {
+    props: {
+      data,
+    },
+  }
+}
+// getServerSideProps로 return된 값은 props로 받아올 수 있다.
+export default function Home({data}: any) {
+  console.log('data : ', data)
+
+  **useEffect(() => {
+    console.log(window.location)
+  }, [])**
+
+  return (
+    <div className={style.container}>
+      <section>
+        <h3>지금 추천하는 도서</h3>
+        {books.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+      <section>
+        <h3>등록된 모든 도서</h3>
+        {books.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+    </div>
+  )
+}
+
+Home.getLayout = (page: ReactNode) => {
+  return <SearchableLayout>{page}</SearchableLayout>
+}
+```
+
+### getServerSideProps의 return값을 props로 전달 받을 때 type은?
+
+- Next에서 정의한 타입으로만 사용해도 모든 타입이 커버된다.
+
+### `InferGetServerSidePropsType`
+
+- getServerSideProps의 반환값 타입을 자동으로 추론해주는 그런 기능을 하는 타입
+- 해당 타입 import후 제네릭으로 `<typeof getServerSideProps>` 함수를 넣어주면 자동으로
+  `getServerSideProps` 함수의 반혼값 타입이 추론되어 매개변수 타입으로 정의된다.
+
+```tsx
+import SearchableLayout from '@/components/searchable-layout'
+import style from './index.module.css'
+import {ReactNode, useEffect} from 'react'
+import books from '@/mock/books.json'
+import BookItem from '@/components/book-item'
+**import {InferGetServerSidePropsType} from 'next'**
+
+export const getServerSideProps = () => {
+  const data = 'hello'
+
+  return {
+    props: {
+      data,
+    },
+  }
+}
+// getServerSideProps로 return된 값은 props로 받아올 수 있다.
+export default function Home(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) {
+  console.log('props : ', props) // props : {data: 'hello'}
+
+  useEffect(() => {
+    console.log(window.location)
+  }, [])
+  return (
+    <div className={style.container}>
+      <section>
+        <h3>지금 추천하는 도서</h3>
+        {books.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+      <section>
+        <h3>등록된 모든 도서</h3>
+        {books.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+    </div>
+  )
+}
+
+Home.getLayout = (page: ReactNode) => {
+  return <SearchableLayout>{page}</SearchableLayout>
+}
+
+```
+
+### SSR로 실제 데이터 갖고와서 처리하기
+
+```tsx
+import SearchableLayout from '@/components/searchable-layout'
+import style from './index.module.css'
+import {ReactNode} from 'react'
+import BookItem from '@/components/book-item'
+import {InferGetServerSidePropsType} from 'next'
+import fetchBooks from '@/lib/fetch-books'
+import fetchRandomBooks from '@/lib/fetch-random-books'
+
+export const getServerSideProps = async () => {
+  const allBooks = await fetchBooks()
+  const recoBooks = await fetchRandomBooks()
+
+  return {
+    props: {
+      allBooks,
+      recoBooks,
+    },
+  }
+}
+// getServerSideProps로 return된 값은 props로 받아올 수 있다.
+export default function Home({
+  allBooks,
+  recoBooks,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  return (
+    <div className={style.container}>
+      <section>
+        <h3>지금 추천하는 도서</h3>
+        {recoBooks.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+      <section>
+        <h3>등록된 모든 도서</h3>
+        {allBooks.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+    </div>
+  )
+}
+
+Home.getLayout = (page: ReactNode) => {
+  return <SearchableLayout>{page}</SearchableLayout>
+}
+```
+
+**위 코드의 문제점**
+
+→ 데이터 처리가 직렬적 : allbooks의 api 호출이 끝난 후 recoBooks(recommended Books) api 호출이 되고 있다.
+
+### 위의 코드 개선
+
+- 데이터 처리를 병렬적으로 할 수 있도록 수정
+- `Promise.all()` 메서드 이용
+  → 인수로 전달한 배열안에 들어있는 모든 비동기 함수를 동시에 실행해주는 메서드
+
+```tsx
+import SearchableLayout from '@/components/searchable-layout'
+import style from './index.module.css'
+import {ReactNode} from 'react'
+import BookItem from '@/components/book-item'
+import {InferGetServerSidePropsType} from 'next'
+import fetchBooks from '@/lib/fetch-books'
+import fetchRandomBooks from '@/lib/fetch-random-books'
+
+export const getServerSideProps = async () => {
+  // const allBooks = await fetchBooks()
+  // const recoBooks = await fetchRandomBooks()
+  const [allBooks, recoBooks] = await Promise.all([
+    fetchBooks(),
+    fetchRandomBooks(),
+  ])
+
+  return {
+    props: {
+      allBooks,
+      recoBooks,
+    },
+  }
+}
+// getServerSideProps로 return된 값은 props로 받아올 수 있다.
+export default function Home({
+  allBooks,
+  recoBooks,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  return (
+    <div className={style.container}>
+      <section>
+        <h3>지금 추천하는 도서</h3>
+        {recoBooks.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+      <section>
+        <h3>등록된 모든 도서</h3>
+        {allBooks.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </section>
+    </div>
+  )
+}
+
+Home.getLayout = (page: ReactNode) => {
+  return <SearchableLayout>{page}</SearchableLayout>
+}
+```
+
+- 개선되었을 때 장점 : API request가 동시에 발송되기에 좀 더 빠르게 페이지가 렌더링 된다.
+
+### 정리하기
+
+- index페이지에 필요한 모든 데이터를 서버사이드 렌더링 방식으로 불러와서 컴포넌트에 전달하는 방법
+
+  1. async 함수가 export가 되면 SSR로 동작하게 된다.
+  2. 특정 함수를 통해 API 를 사전에 호출하고, `return {props: {}}` 로 컴포넌트에서 props로 받아서 처리할 수 있게 호출한 값을 return 한다.
+
+  ```tsx
+  export const getServerSideProps = async () => {
+    // const allBooks = await fetchBooks()
+    // const recoBooks = await fetchRandomBooks()
+    const [allBooks, recoBooks] = await Promise.all([
+      fetchBooks(),
+      fetchRandomBooks(),
+    ])
+
+    return {
+      props: {
+        allBooks,
+        recoBooks,
+      },
+    }
+  }
+  ```
+
+  1. 위의 함수를 자동을 추론할 수 있는 Next의 타입 `InferGetServerSidePropsType` 으로 `getServerSideProps` 함수의 타입을 추론할 수 있게하여 사전에 호출한 데이터를 사용하는 컴포넌트에서 사용할 수 있도록 처리한다.
+
+  ```tsx
+
+  ```
+
+## 검색어 SSR로 처리하기
+
+1. `getServerSideProps`라는 함수를 export하면 SSR로 동작하므로 컴포넌트 위에 해당 함수를 선언한다.
+
+   ```tsx
+   export const getServerSideProps = async () => {
+     return {
+       props: {},
+     }
+   }
+   ```
+
+2. 검색어는 URI에 query string으로 `?q={검색어}` 로 검색어로 데이터를 불러와야한다.
+
+   - 처리 방법
+     - Query String으로 전달된 q의 검색어 값을 읽어온다.
+     - 해당 데이터를 백엔드 서버로부터 불러와야한다.
+   - query string의 값을 getServerSideProps함수 내에서 읽어보자.
+     1. getServerSideProps의 매개변수에 `context` 라는 값을 이용하는데, 해당 값의 타입은 Next에서 자체 제공하는 `GetServerSidePropsContext` 로 정의한다.
+
+   ### `GetServerSidePropsContext`
+
+   - `context` 매개변수는 현재 브라우저로부터 받은 요청에 대한 모든 정보가 다 포함되어 있다.
+   - context를 console.log로 찍어보면 터미널에 많은 정보가 나오는데 그 중
+     ```tsx
+     export const getServerSideProps = async (
+       context: GetServerSidePropsContext,
+     ) => {
+       console.log('context : ', context)
+       return {
+         props: {},
+       }
+     }
+     // context: .... query: {q: '한입'} ....
+     ```
+     → 해당 값을 꺼내서 사용하면 된다.
+   - 코드
+
+     ```tsx
+     // src/pages/search/index.tsx
+     import SearchableLayout from '@/components/searchable-layout'
+     import {ReactNode} from 'react'
+     import BookItem from '@/components/book-item'
+     import {GetServerSidePropsContext, InferGetServerSidePropsType} from 'next'
+     import fetchBooks from '@/lib/fetch-books'
+
+     export const getServerSideProps = async (
+       context: GetServerSidePropsContext,
+     ) => {
+       const q = context.query.q
+
+       const books = await fetchBooks(q as string)
+
+       return {
+         props: {
+           books,
+         },
+       }
+     }
+
+     export default function Page({
+       books,
+     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+       return (
+         <div>
+           {books.map((book) => (
+             <BookItem key={book.id} {...book} />
+           ))}
+         </div>
+       )
+     }
+
+     Page.getLayout = (page: ReactNode) => {
+       return <SearchableLayout>{page}</SearchableLayout>
+     }
+
+     // src/lib/fetch-books.ts
+     // 기존 코드에서 query string들어왔을 때 분기처리 추가
+     import {BookData} from '@/types'
+
+     export default async function fetchBooks(q?: string): Promise<BookData[]> {
+       let url = `http://localhost:12345/book`
+
+       if (q) {
+         url += `/search?q=${q}`
+       }
+
+       try {
+         const response = await fetch(url)
+
+         if (!response.ok) {
+           throw new Error()
+         }
+
+         return await response.json()
+       } catch (err) {
+         console.error(err)
+         return []
+       }
+     }
+     ```
+
+## 상세페이지 SSR로 처리하기
+
+1. `getServerSideProps`라는 함수를 export하면 SSR로 동작하므로 컴포넌트 위에 해당 함수를 선언한다.
+
+   ```tsx
+   export const getServerSideProps = async () => {
+     return {
+       props: {},
+     }
+   }
+   ```
+
+2. 검색어는 URL parameter `/{id}` 로 전달되는 값으로 도서아이디를 기준으로 특정 도서의 데이터를 불러와야 한다.
+
+   - 처리 방법
+     - getServerSideProps함수 내에서 url파라미터를 불러온다.
+     - `/book/1` 이렇게 넘어오면 1번의 도서 데이터를 서버에서 불러온다.
+   - query string을 처리했던 타입 그대로 사용
+
+   ### `GetServerSidePropsContext`
+
+   - 해당 타입을 getServerSideProps의 매개변수인 `context` 의 타입으로 해준다.
+
+   ```tsx
+   export const getServerSideProps = async (
+     context: GetServerSidePropsContext,
+   ) => {
+     const id = context.params!.id // !로 context.params값이 있을 것으로 타입을 단언해준다.
+
+     return {
+       props: {},
+     }
+   }
+   ```
+
+   ### `context.params!.id`
+
+   - params값은 undefined 일 수 있기때문에 에러가 난다.
+   - 이 때 타입 단언을 위해 `! (undefined가 아닐 것이다.)` 사용
+   - `!` 로 타입 단언을 해도 안전한 이유는?
+     → `[id].tsx` 페이지는 무조건 URL파라미터가 하나 있어야만 접근할 수 있는 페이지이므로, URL 파라미터는 반드시 있을 수 밖에 었는 값이다.
